@@ -1,6 +1,8 @@
-import React, { useState } from 'react';
+import React, { useState,useRef  } from 'react';
 import { motion } from 'framer-motion';
-import { Mail, Phone, MapPin, Clock, ArrowRight } from 'lucide-react';
+import { Mail, Phone, MapPin, Clock, ArrowRight, X, CheckCircle } from 'lucide-react';
+
+import emailjs from '@emailjs/browser';
 
 const Contact: React.FC = () => {
   const [formData, setFormData] = useState({
@@ -16,6 +18,8 @@ const Contact: React.FC = () => {
     success: boolean;
     message: string;
   } | null>(null);
+
+  const [showSuccessPopup, setShowSuccessPopup] = useState(false);
 
   const handleChange = (e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement | HTMLSelectElement>) => {
     const { name, value } = e.target;
@@ -104,9 +108,83 @@ const Contact: React.FC = () => {
     },
   };
 
+  const form = useRef<HTMLFormElement>(null);
+
+  const sendEmail = (e: React.FormEvent) => {
+  e.preventDefault();
+
+  if (form.current) {
+    emailjs
+      .sendForm('service_20lrn3c', 'template_3pwnz8t', form.current, {
+        publicKey: 'tY1rQxCnh_kLTjQHl',
+      })
+      .then(
+        () => {
+          console.log('SUCCESS!');
+          setShowSuccessPopup(true);
+          // Reset form after successful submission
+          setFormData({
+            name: '',
+            email: '',
+            phone: '',
+            subject: '',
+            message: '',
+          });
+        },
+        (error) => {
+          console.log('FAILED...', error.text);
+        },
+      );
+  }
+};
+
   return (
     <section id="contact" className="py-20 bg-gray-50">
       <div className="container mx-auto px-4 md:px-6">
+        {/* Success Popup */}
+        {showSuccessPopup && (
+          <motion.div
+            initial={{ opacity: 0 }}
+            animate={{ opacity: 1 }}
+            exit={{ opacity: 0 }}
+            className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50"
+            onClick={() => setShowSuccessPopup(false)}
+          >
+            <motion.div
+              initial={{ scale: 0.8, opacity: 0 }}
+              animate={{ scale: 1, opacity: 1 }}
+              exit={{ scale: 0.8, opacity: 0 }}
+              className="bg-white rounded-xl p-8 max-w-md mx-4 relative"
+              onClick={(e) => e.stopPropagation()}
+            >
+              <button
+                onClick={() => setShowSuccessPopup(false)}
+                className="absolute top-4 right-4 text-gray-400 hover:text-gray-600"
+              >
+                <X className="h-6 w-6" />
+              </button>
+              
+              <div className="text-center">
+                <div className="mx-auto flex items-center justify-center w-16 h-16 bg-green-100 rounded-full mb-4">
+                  <CheckCircle className="h-8 w-8 text-green-600" />
+                </div>
+                <h3 className="text-xl font-bold text-gray-900 mb-2">
+                  Thank you for reaching out
+                </h3>
+                <p className="text-gray-600 mb-6">
+                  You'll get a reply very soon
+                </p>
+                <button
+                  onClick={() => setShowSuccessPopup(false)}
+                  className="bg-primary-600 text-white px-6 py-2 rounded-lg hover:bg-primary-700 transition-colors"
+                >
+                  Close
+                </button>
+              </div>
+            </motion.div>
+          </motion.div>
+        )}
+
         <motion.div 
           initial={{ opacity: 0, y: 20 }}
           whileInView={{ opacity: 1, y: 0 }}
@@ -185,7 +263,8 @@ const Contact: React.FC = () => {
               </motion.div>
             )}
             
-            <form onSubmit={handleSubmit} className="space-y-5">
+            <form ref={form} onSubmit={sendEmail} className="space-y-5">
+              
               <div className="grid md:grid-cols-2 gap-5">
                 <div>
                   <label htmlFor="name" className="block text-sm font-medium text-gray-700 mb-1">
