@@ -1,6 +1,6 @@
 import React from 'react';
 import { motion } from 'framer-motion';
-import { ExternalLink } from 'lucide-react';
+// import { ExternalLink } from 'lucide-react';
 
 interface ProjectProps {
   project: {
@@ -49,7 +49,12 @@ const PortfolioCard: React.FC<ProjectProps> = ({ project, index }) => {
                 </span>
               ))}
             </div>
-            
+            {/* <a 
+              href={project.link} 
+              className="inline-flex items-center text-white hover:text-primary-300 font-medium transition-colors"
+            >
+              View Project <ExternalLink className="ml-1 h-4 w-4" />
+            </a> */}
           </div>
         </div>
       </div>

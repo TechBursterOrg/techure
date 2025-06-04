@@ -54,8 +54,8 @@ const Contact: React.FC = () => {
     {
       title: 'Email Us',
       details: [
-        'info@techure.com',
-        'support@techure.com'
+        'techuredev@gmail.com'
+        
       ],
       icon: Mail,
       color: 'primary',
@@ -72,8 +72,8 @@ const Contact: React.FC = () => {
     {
       title: 'Visit Us',
       details: [
-        '123 Tech Plaza, Innovation District',
-        'San Francisco, CA 92101'
+        '58 Peregrine Road, Hainault, Ilford, Essex, G6 3SZ ',
+        
       ],
       icon: MapPin,
       color: 'primary',
