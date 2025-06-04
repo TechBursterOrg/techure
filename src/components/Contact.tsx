@@ -59,8 +59,8 @@ const Contact: React.FC = () => {
     {
       title: 'Call Us',
       details: [
-        '+1 (555) 123-4567',
-        '+1 (555) 987-6543'
+        '+44 7511435209',
+        '+234 8069980777'
       ],
       icon: Phone,
       color: 'secondary',

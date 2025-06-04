@@ -26,7 +26,6 @@ const Navbar: React.FC = () => {
     { name: 'Services', to: 'services' },
     { name: 'About', to: 'about' },
     { name: 'Portfolio', to: 'portfolio' },
-    { name: 'Training', to: 'training' },
     { name: 'Contact', to: 'contact' },
   ];
 
@@ -46,23 +45,48 @@ const Navbar: React.FC = () => {
           </div>
 
           {/* Desktop Menu */}
-          <div className="hidden md:flex space-x-8">
-            {navLinks.map((link) => (
-              <Link
-                key={link.name}
-                to={link.to}
-                spy={true}
-                smooth={true}
-                offset={-70}
-                duration={700}
-                className={`cursor-pointer transition-colors duration-200 ${
-                  scrolled ? 'text-gray-800 hover:text-primary-600' : 'text-gray-800 hover:text-primary-600'
-                }`}
-              >
-                {link.name}
-              </Link>
-            ))}
-          </div>
+          {/* Desktop Menu */}
+<div className="hidden md:flex flex-1 justify-center items-center space-x-8">
+  {navLinks
+    .filter((link) => link.name !== 'Contact')
+    .map((link) => (
+      <Link
+        key={link.name}
+        to={link.to}
+        spy={true}
+        smooth={true}
+        offset={-70}
+        duration={700}
+        className={`cursor-pointer transition-colors duration-200 ${
+          scrolled
+            ? 'text-gray-800 hover:text-primary-600'
+            : 'text-gray-800 hover:text-primary-600'
+        }`}
+      >
+        {link.name}
+      </Link>
+    ))}
+</div>
+
+{/* Contact Button */}
+<div className="hidden md:flex items-center">
+  {navLinks
+    .filter((link) => link.name === 'Contact')
+    .map((link) => (
+      <Link
+        key={link.name}
+        to={link.to}
+        spy={true}
+        smooth={true}
+        offset={-70}
+        duration={700}
+        className="px-6 py-3 bg-primary-600 hover:bg-primary-700 text-white font-medium rounded-lg transition-all transform hover:scale-105 shadow-lg hover:shadow-primary-500/30"
+      >
+        {link.name}
+      </Link>
+    ))}
+</div>
+
 
           {/* Mobile Menu Button */}
           <div className="md:hidden">
