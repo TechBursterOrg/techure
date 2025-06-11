@@ -43,14 +43,7 @@ const Footer = () => {
 
       <div className="max-w-7xl mx-auto px-6 lg:px-8 relative z-10">
         {/* Scroll to top button */}
-        <div className="flex justify-center -mt-6">
-          <button
-            onClick={scrollToTop}
-            className="p-3 bg-gradient-to-r from-cyan-500 to-blue-600 rounded-full text-white hover:from-cyan-400 hover:to-blue-500 transition-all duration-300 transform hover:scale-110 shadow-lg hover:shadow-cyan-500/25 group"
-          >
-            <ChevronUp className="h-6 w-6 group-hover:-translate-y-1 transition-transform" />
-          </button>
-        </div>
+        
 
         <div className="py-16">
           <div className="grid lg:grid-cols-4 md:grid-cols-2 gap-8">
