@@ -1,10 +1,10 @@
-import  { useState, useEffect, useRef } from 'react';
+import { useState, useEffect, useRef } from 'react';
 import { ExternalLink } from 'lucide-react';
 
 const Portfolio = () => {
   const [filter, setFilter] = useState('All');
   const [isVisible, setIsVisible] = useState(false);
-  const sectionRef = useRef<HTMLElement>(null);
+  const sectionRef = useRef(null);
   
   useEffect(() => {
     const observer = new IntersectionObserver(
@@ -36,11 +36,12 @@ const Portfolio = () => {
     },
     {
       id: 2,
-      title: 'Health & Fitness App',
-      category: 'Mobile App',
+      title: 'Home Management and Services Coordination App',
+      category: 'Web App',
       image: 'https://images.pexels.com/photos/4498362/pexels-photo-4498362.jpeg?auto=compress&cs=tinysrgb&w=1260&h=750&dpr=2',
-      tech: ['React Native', 'Firebase'],
+      tech: ['React', 'Firebase'],
       gradient: 'from-purple-500 to-pink-600',
+      link: 'https://homeheroes.netlify.app',
     },
     {
       id: 3,
@@ -49,22 +50,25 @@ const Portfolio = () => {
       image: 'https://images.pexels.com/photos/3182747/pexels-photo-3182747.jpeg?auto=compress&cs=tinysrgb&w=1260&h=750&dpr=2',
       tech: ['Next.js', 'Tailwind'],
       gradient: 'from-green-500 to-emerald-600',
+      link: 'https://the-cho.netlify.app',
     },
     {
       id: 4,
       title: 'Real Estate Platform',
-      category: 'Web App',
+      category: 'Website',
       image: 'https://images.pexels.com/photos/323780/pexels-photo-323780.jpeg?auto=compress&cs=tinysrgb&w=1260&h=750&dpr=2',
       tech: ['Vue.js', 'Express'],
       gradient: 'from-orange-500 to-red-600',
+      link: 'https://example.com', // Added placeholder link
     },
     {
       id: 5,
       title: 'Food Delivery App',
-      category: 'Mobile App',
+      category: 'Website', // Fixed typo from 'websie' to 'Website'
       image: 'https://images.pexels.com/photos/1640770/pexels-photo-1640770.jpeg?auto=compress&cs=tinysrgb&w=1260&h=750&dpr=2',
       tech: ['Flutter', 'Firebase'],
       gradient: 'from-yellow-500 to-orange-600',
+      link: 'https://example.com', // Added placeholder link
     },
     {
       id: 6,
@@ -73,10 +77,17 @@ const Portfolio = () => {
       image: 'https://images.pexels.com/photos/196644/pexels-photo-196644.jpeg?auto=compress&cs=tinysrgb&w=1260&h=750&dpr=2',
       tech: ['React', 'Framer Motion'],
       gradient: 'from-indigo-500 to-purple-600',
+      link: 'https://peterokusanya.netlify.app',
     },
   ];
   
   const filteredProjects = filter === 'All' ? projects : projects.filter(p => p.category === filter);
+
+  const handleProjectClick = (link: string | undefined) => {
+    if (link) {
+      window.open(link, '_blank', 'noopener,noreferrer');
+    }
+  };
 
   return (
     <section ref={sectionRef} id="portfolio" className="py-20 bg-gray-900 relative overflow-hidden">
@@ -142,7 +153,7 @@ const Portfolio = () => {
                   <div className="absolute bottom-6 left-6 right-6 transform translate-y-4 group-hover:translate-y-0 transition-transform duration-300">
                     <h3 className="text-xl font-bold text-white mb-2">{project.title}</h3>
                     <p className="text-gray-300 mb-4">{project.category}</p>
-                    <div className="flex flex-wrap gap-2">
+                    <div className="flex flex-wrap gap-2 mb-4">
                       {project.tech.map((tech, idx) => (
                         <span 
                           key={idx} 
@@ -153,6 +164,15 @@ const Portfolio = () => {
                         </span>
                       ))}
                     </div>
+                    <button 
+                      onClick={() => handleProjectClick(project.link)}
+                      className={`flex items-center gap-2 px-4 py-2 bg-gradient-to-r from-cyan-500 to-blue-600 text-white font-medium rounded-full hover:from-cyan-400 hover:to-blue-500 transition-all duration-300 transform scale-0 group-hover:scale-100 ${!project.link ? 'opacity-50 cursor-not-allowed' : 'cursor-pointer'}`}
+                      style={{ transitionDelay: '200ms' }}
+                      disabled={!project.link}
+                    >
+                      <ExternalLink className="h-4 w-4" />
+                      View Project
+                    </button>
                   </div>
                 </div>
               </div>
