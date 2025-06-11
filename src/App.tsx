@@ -1,11 +1,10 @@
-import React from 'react';
-import Navbar from './components/Navbar';
-import Hero from './components/Hero';
-import Services from './components/Services';
-import About from './components/About';
-import Portfolio from './components/Portfolio';
-import Contact from './components/Contact';
-import Footer from './components/Footer';
+import Navbar from './component/Navbar';
+import Hero from './component/Hero';
+import Services from './component/Services';
+import About from './component/About';
+import Portfolio from './component/Portfolio';
+import Contact from './component/Contact';
+import Footer from './component/Footer';
 import ScrollToTop from './components/ScrollToTop';
 
 function App() {

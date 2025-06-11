@@ -29,26 +29,26 @@ const Contact: React.FC = () => {
     }));
   };
 
-  const handleSubmit = (e: React.FormEvent) => {
-    e.preventDefault();
+  // const handleSubmit = (e: React.FormEvent) => {
+  //   e.preventDefault();
     
-    // Simulate form submission
-    setFormStatus({ submitted: true, success: true, message: 'Thank you for your message. We will get back to you soon!' });
+  //   // Simulate form submission
+  //   setFormStatus({ submitted: true, success: true, message: 'Thank you for your message. We will get back to you soon!' });
     
-    // Reset form after successful submission
-    setFormData({
-      name: '',
-      email: '',
-      phone: '',
-      subject: '',
-      message: '',
-    });
+  //   // Reset form after successful submission
+  //   setFormData({
+  //     name: '',
+  //     email: '',
+  //     phone: '',
+  //     subject: '',
+  //     message: '',
+  //   });
     
-    // Reset status after 5 seconds
-    setTimeout(() => {
-      setFormStatus(null);
-    }, 5000);
-  };
+  //   // Reset status after 5 seconds
+  //   setTimeout(() => {
+  //     setFormStatus(null);
+  //   }, 5000);
+  // };
   
   const contactInfo = [
     {
