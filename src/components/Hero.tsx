@@ -7,7 +7,8 @@ const Hero: React.FC = () => {
   return (
     <section 
       id="hero" 
-      className="min-h-screen flex items-center justify-center relative bg-gradient-to-br from-primary-50 to-secondary-50 overflow-hidden"
+      className="min-h-screen flex items-center justify-center relative bg-gradient-to-br from-primary-50 to-secondary-50 overflow-hidden "
+      style={{paddingTop: "20", paddingBottom:"20px"}}
     >
       {/* Background Elements */}
       <div className="absolute inset-0 overflow-hidden">
