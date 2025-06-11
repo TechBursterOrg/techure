@@ -69,14 +69,15 @@ const Portfolio = () => {
       title: 'Real Estate Platform',
       category: 'Website',
       image: 'https://images.pexels.com/photos/323780/pexels-photo-323780.jpeg?auto=compress&cs=tinysrgb&w=1260&h=750&dpr=2',
-      tech: ['Vue.js', 'Express'],
+      tech: ['React.js', 'Express'],
       gradient: 'from-orange-500 to-red-600',
+      link: 'https://opwan.netlify.app',
       // No link property - will be disabled
     },
     {
       id: 5,
       title: 'Food Delivery App',
-      category: 'Website',
+      category: 'Mobile App',
       image: 'https://images.pexels.com/photos/1640770/pexels-photo-1640770.jpeg?auto=compress&cs=tinysrgb&w=1260&h=750&dpr=2',
       tech: ['Flutter', 'Firebase'],
       gradient: 'from-yellow-500 to-orange-600',
