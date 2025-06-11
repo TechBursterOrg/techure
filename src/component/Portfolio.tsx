@@ -1,10 +1,21 @@
 import { useState, useEffect, useRef } from 'react';
 import { ExternalLink } from 'lucide-react';
 
+// Define the Project type
+interface Project {
+  id: number;
+  title: string;
+  category: string;
+  image: string;
+  tech: string[];
+  gradient: string;
+  link?: string; // Optional property
+}
+
 const Portfolio = () => {
   const [filter, setFilter] = useState('All');
   const [isVisible, setIsVisible] = useState(false);
-  const sectionRef = useRef(null);
+  const sectionRef = useRef<HTMLElement>(null);
   
   useEffect(() => {
     const observer = new IntersectionObserver(
@@ -25,7 +36,7 @@ const Portfolio = () => {
 
   const filters = ['All', 'Website', 'Web App', 'Mobile App'];
   
-  const projects = [
+  const projects: Project[] = [
     {
       id: 1,
       title: 'E-Commerce Platform',
@@ -33,6 +44,7 @@ const Portfolio = () => {
       image: 'https://images.pexels.com/photos/230544/pexels-photo-230544.jpeg?auto=compress&cs=tinysrgb&w=1260&h=750&dpr=2',
       tech: ['React', 'Node.js', 'MongoDB'],
       gradient: 'from-cyan-500 to-blue-600',
+      // No link property - will be disabled
     },
     {
       id: 2,
@@ -59,16 +71,16 @@ const Portfolio = () => {
       image: 'https://images.pexels.com/photos/323780/pexels-photo-323780.jpeg?auto=compress&cs=tinysrgb&w=1260&h=750&dpr=2',
       tech: ['Vue.js', 'Express'],
       gradient: 'from-orange-500 to-red-600',
-      link: 'https://example.com', // Added placeholder link
+      // No link property - will be disabled
     },
     {
       id: 5,
       title: 'Food Delivery App',
-      category: 'Website', // Fixed typo from 'websie' to 'Website'
+      category: 'Website',
       image: 'https://images.pexels.com/photos/1640770/pexels-photo-1640770.jpeg?auto=compress&cs=tinysrgb&w=1260&h=750&dpr=2',
       tech: ['Flutter', 'Firebase'],
       gradient: 'from-yellow-500 to-orange-600',
-      link: 'https://example.com', // Added placeholder link
+      // No link property - will be disabled
     },
     {
       id: 6,
@@ -83,10 +95,14 @@ const Portfolio = () => {
   
   const filteredProjects = filter === 'All' ? projects : projects.filter(p => p.category === filter);
 
-  const handleProjectClick = (link: string | undefined) => {
+  const handleProjectClick = (link: string | undefined): void => {
     if (link) {
       window.open(link, '_blank', 'noopener,noreferrer');
     }
+  };
+
+  const hasValidLink = (project: Project): boolean => {
+    return project.link !== undefined && project.link.trim() !== '';
   };
 
   return (
@@ -140,8 +156,9 @@ const Portfolio = () => {
                 isVisible 
                   ? 'opacity-100 translate-y-0' 
                   : 'opacity-0 translate-y-10'
-              }`}
+              } ${hasValidLink(project) ? 'cursor-pointer' : ''}`}
               style={{ transitionDelay: `${500 + (index * 100)}ms` }}
+              onClick={() => hasValidLink(project) && handleProjectClick(project.link)}
             >
               <div className="aspect-[4/3] overflow-hidden">
                 <img 
@@ -149,7 +166,12 @@ const Portfolio = () => {
                   alt={project.title}
                   className="w-full h-full object-cover group-hover:scale-110 transition-transform duration-700"
                 />
-                <div className="absolute inset-0 bg-gradient-to-t from-black/80 via-black/40 to-transparent opacity-0 group-hover:opacity-100 transition-all duration-300">
+                <div 
+                  className={`absolute inset-0 bg-gradient-to-t from-black/80 via-black/40 to-transparent opacity-0 group-hover:opacity-100 transition-all duration-300 ${
+                    hasValidLink(project) ? 'cursor-pointer' : 'cursor-default'
+                  }`}
+                  onClick={() => hasValidLink(project) && handleProjectClick(project.link)}
+                >
                   <div className="absolute bottom-6 left-6 right-6 transform translate-y-4 group-hover:translate-y-0 transition-transform duration-300">
                     <h3 className="text-xl font-bold text-white mb-2">{project.title}</h3>
                     <p className="text-gray-300 mb-4">{project.category}</p>
@@ -164,15 +186,17 @@ const Portfolio = () => {
                         </span>
                       ))}
                     </div>
-                    <button 
-                      onClick={() => handleProjectClick(project.link)}
-                      className={`flex items-center gap-2 px-4 py-2 bg-gradient-to-r from-cyan-500 to-blue-600 text-white font-medium rounded-full hover:from-cyan-400 hover:to-blue-500 transition-all duration-300 transform scale-0 group-hover:scale-100 ${!project.link ? 'opacity-50 cursor-not-allowed' : 'cursor-pointer'}`}
-                      style={{ transitionDelay: '200ms' }}
-                      disabled={!project.link}
+                    <div
+                      className={`flex items-center gap-2 px-4 py-2 bg-gradient-to-r from-cyan-500 to-blue-600 text-white font-medium rounded-full transition-all duration-300 transform scale-0 group-hover:scale-100 ${
+                        hasValidLink(project)
+                          ? 'hover:from-cyan-400 hover:to-blue-500 hover:shadow-lg hover:shadow-cyan-500/25'
+                          : 'opacity-50'
+                      }`}
+                      style={{ transformOrigin: 'center' }}
                     >
                       <ExternalLink className="h-4 w-4" />
-                      View Project
-                    </button>
+                      {hasValidLink(project) ? 'View Project' : 'Coming Soon'}
+                    </div>
                   </div>
                 </div>
               </div>
