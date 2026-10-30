@@ -1,3 +1,175 @@
 @tailwind base;
 @tailwind components;
 @tailwind utilities;
+
+@layer base {
+  body {
+    @apply bg-ink text-fg font-sans antialiased;
+    line-height: 1.6;
+    overflow-x: clip;
+  }
+
+  h1,
+  h2,
+  h3,
+  h4 {
+    @apply font-bold;
+    letter-spacing: -0.025em;
+    line-height: 1.08;
+    text-wrap: balance;
+  }
+
+  h2 {
+    font-size: clamp(1.9rem, 1.4rem + 2.2vw, 3.25rem);
+    letter-spacing: -0.03em;
+  }
+
+  ::selection {
+    @apply bg-signal text-ink;
+  }
+}
+
+@layer components {
+  .wrap {
+    @apply mx-auto w-full max-w-wrap;
+    padding-inline: clamp(1.25rem, 4vw, 2.5rem);
+  }
+
+  .section {
+    @apply relative;
+    padding-block: clamp(4.5rem, 10vw, 8.5rem);
+  }
+
+  .section--surface {
+    @apply bg-surface border-y border-line;
+  }
+
+  .eyebrow {
+    @apply block font-mono text-xs font-medium uppercase text-fg-3;
+    letter-spacing: 0.22em;
+  }
+
+  .lead {
+    @apply text-fg-2;
+    font-size: clamp(1.2rem, 1.1rem + 0.45vw, 1.4rem);
+    line-height: 1.45;
+  }
+
+  .btn {
+    @apply inline-flex items-center justify-center gap-2 rounded-full px-5 py-3 text-sm font-semibold transition-colors duration-150 ease-snap;
+  }
+
+  .btn-metal {
+    @apply btn bg-metal text-ink hover:bg-fg;
+  }
+
+  .btn-ghost {
+    @apply btn border border-line-strong text-fg hover:border-line-hover hover:bg-raised;
+  }
+
+  .field {
+    @apply w-full rounded border border-line-strong bg-ink px-4 py-3 text-fg placeholder-fg-3 outline-none transition-colors duration-150 ease-snap focus:border-steel;
+  }
+}
+
+/* Angled slate band behind the hero */
+.slate {
+  position: absolute;
+  inset: 0 0 auto;
+  height: 1200px;
+  z-index: -1;
+  pointer-events: none;
+  overflow: hidden;
+  -webkit-mask-image: linear-gradient(#000 0 780px, transparent 1200px);
+  mask-image: linear-gradient(#000 0 780px, transparent 1200px);
+}
+
+.slate__turn {
+  position: absolute;
+  top: 900px;
+  left: 50%;
+  width: 3800px;
+  height: 0;
+  transform: translateX(-50%) rotate(-13deg);
+}
+
+.slate__turn > div {
+  position: absolute;
+  left: 0;
+  right: 0;
+}
+
+.slate__ground {
+  top: 131px;
+  height: 2400px;
+  background: color-mix(in srgb, #151719 70%, #0c0d0e);
+}
+
+.slate__drop {
+  top: 131px;
+  height: 102px;
+  background: linear-gradient(rgba(0, 0, 0, 0.45), transparent);
+}
+
+.slate__band {
+  top: -131px;
+  height: 262px;
+  background: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='240' height='240'%3E%3Cfilter id='g'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='1.15' numOctaves='1' stitchTiles='stitch'/%3E%3CfeColorMatrix values='0 0 0 0 1 0 0 0 0 1 0 0 0 0 1 0 0 0 0.05 0'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23g)'/%3E%3C/svg%3E"),
+    linear-gradient(#1f2225, #151719);
+}
+
+.slate__rule {
+  top: -226px;
+  height: 25px;
+  background: color-mix(in srgb, #1f2225 70%, transparent);
+  box-shadow: inset 0 1.5px 0 color-mix(in srgb, #b9c2cb 22%, transparent);
+}
+
+.slate--compact .slate__turn {
+  top: 620px;
+}
+
+@media (max-width: 700px) {
+  .slate {
+    height: 900px;
+    -webkit-mask-image: linear-gradient(#000 0 540px, transparent 820px);
+    mask-image: linear-gradient(#000 0 540px, transparent 820px);
+  }
+
+  .slate__turn {
+    top: 700px;
+    transform: translateX(-50%) rotate(-13deg) scale(0.42);
+  }
+
+  .slate--compact .slate__turn {
+    top: 480px;
+  }
+}
+
+/* FAQ disclosure marker */
+.faq summary {
+  list-style: none;
+}
+
+.faq summary::-webkit-details-marker {
+  display: none;
+}
+
+.faq summary::after {
+  content: '+';
+  @apply flex-none font-mono text-xl text-fg-3 transition-transform duration-150 ease-snap;
+}
+
+.faq details[open] summary::after {
+  @apply text-signal;
+  transform: rotate(45deg);
+}
+
+@media (prefers-reduced-motion: reduce) {
+  *,
+  *::before,
+  *::after {
+    transition-duration: 0.01ms !important;
+    animation-duration: 0.01ms !important;
+  }
+}

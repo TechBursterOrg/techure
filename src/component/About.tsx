@@ -1,142 +1,106 @@
-import React, { useState, useEffect, useRef } from 'react';
-import { Rocket, Sparkles, Target, Clock } from 'lucide-react';
+import { useEffect, useState } from 'react';
+import { useInView } from 'react-intersection-observer';
+import { Link } from 'react-router-dom';
+import Reveal from './Reveal';
 
-const About = () => {
-  const [isVisible, setIsVisible] = useState(false);
+const steps = [
+  {
+    kicker: 'Discover',
+    title: 'We start with your goals.',
+    description: 'A free consultation to understand your business, your users and what success looks like.',
+  },
+  {
+    kicker: 'Design',
+    title: 'Creative work with a purpose.',
+    description: 'Unique solutions for complex challenges, designed around the people who will use them.',
+  },
+  {
+    kicker: 'Build',
+    title: 'Swift execution, no shortcuts.',
+    description: 'Rapid development with emerging technologies, without compromising on quality.',
+  },
+  {
+    kicker: 'Launch',
+    title: 'Results you can measure.',
+    description: 'We ship solutions that drive business success, and stay on hand once they are live.',
+  },
+];
+
+const targets = { projects: 50, clients: 25, years: 3 };
+
+const About = ({ head = true }: { head?: boolean }) => {
   const [counters, setCounters] = useState({ projects: 0, clients: 0, years: 0 });
-  const sectionRef = useRef<HTMLElement>(null);
+  const { ref, inView } = useInView({ threshold: 0.3, triggerOnce: true });
 
   useEffect(() => {
-    const observer = new IntersectionObserver(
-      ([entry]) => {
-        if (entry.isIntersecting) {
-          setIsVisible(true);
-          // Animate counters
-          const targets = { projects: 50, clients: 25, years: 3 };
-          const duration = 2000;
-          const steps = 60;
-          const stepTime = duration / steps;
-          
-          let step = 0;
-          const timer = setInterval(() => {
-            step++;
-            const progress = step / steps;
-            setCounters({
-              projects: Math.floor(targets.projects * progress),
-              clients: Math.floor(targets.clients * progress),
-              years: Math.floor(targets.years * progress),
-            });
-            
-            if (step >= steps) clearInterval(timer);
-          }, stepTime);
-        }
-      },
-      { threshold: 0.1 }
-    );
-
-    if (sectionRef.current) {
-      observer.observe(sectionRef.current);
-    }
-
-    return () => observer.disconnect();
-  }, []);
+    if (!inView) return;
+    const steps = 60;
+    let step = 0;
+    const timer = setInterval(() => {
+      step++;
+      const progress = step / steps;
+      setCounters({
+        projects: Math.floor(targets.projects * progress),
+        clients: Math.floor(targets.clients * progress),
+        years: Math.floor(targets.years * progress),
+      });
+      if (step >= steps) clearInterval(timer);
+    }, 2000 / steps);
+    return () => clearInterval(timer);
+  }, [inView]);
 
   const stats = [
-    { number: `${counters.projects}+`, label: 'Projects Completed' },
-    { number: `${counters.clients}+`, label: 'Happy Clients' },
-    { number: `${counters.years}+`, label: 'Years Experience' },
-    { number: '24/7', label: 'Support Available' },
-  ];
-
-  const features = [
-    { icon: Rocket, title: 'Innovation Leaders', description: 'Pioneering advanced solutions with emerging technologies' },
-    { icon: Sparkles, title: 'Creative Excellence', description: 'Crafting unique solutions for complex challenges' },
-    { icon: Target, title: 'Strategic Impact', description: 'Delivering solutions that drive business success' },
-    { icon: Clock, title: 'Swift Execution', description: 'Rapid development without compromising excellence' },
+    { number: `${counters.projects}+`, label: 'Projects completed' },
+    { number: `${counters.clients}+`, label: 'Happy clients' },
+    { number: `${counters.years}+`, label: 'Years experience' },
+    { number: '24/7', label: 'Support available' },
   ];
 
   return (
-    <section ref={sectionRef} id="about" className="py-20 bg-black relative overflow-hidden">
-      <div className="absolute inset-0">
-        <div className="absolute top-1/4 left-1/4 w-64 h-64 bg-gradient-to-r from-cyan-500/10 to-blue-500/10 rounded-full blur-3xl animate-pulse"></div>
-        <div className="absolute bottom-1/4 right-1/4 w-96 h-96 bg-gradient-to-r from-purple-500/10 to-pink-500/10 rounded-full blur-3xl animate-pulse delay-1000"></div>
-      </div>
-      
-      <div className="max-w-7xl mx-auto px-6 lg:px-8 relative z-10">
-        <div className={`text-center mb-16 transition-all duration-1000 ${
-          isVisible ? 'opacity-100 translate-y-0' : 'opacity-0 translate-y-10'
-        }`}>
-          <div className="inline-flex items-center px-4 py-2 bg-gradient-to-r from-cyan-500/10 to-blue-500/10 rounded-full border border-cyan-500/20 mb-6">
-            <Target className="h-4 w-4 text-cyan-400 mr-2 animate-pulse" />
-            <span className="text-sm text-cyan-300">About Us</span>
-          </div>
-          <h2 className="text-4xl lg:text-5xl font-bold text-white mb-6">
-            Pioneering Digital Innovation
-          </h2>
+    <section id="about" className="section section--surface">
+      <div className="wrap">
+        {head && (
+        <Reveal className="max-w-[44rem]">
+          <span className="eyebrow">How we work</span>
+          <h2 className="mt-4">Four steps from idea to launch.</h2>
+          <p className="mt-6 text-lg text-fg-2">
+            We blend creativity with technical expertise to craft solutions that meet a high bar and
+            exceed expectations.
+          </p>
+          <Link to="/about" className="mt-6 inline-block font-semibold text-steel transition-colors hover:text-fg">
+            More on how we work →
+          </Link>
+        </Reveal>
+        )}
+
+        <div className={`${head ? 'mt-16' : ''} grid gap-x-10 gap-y-12 md:grid-cols-2 lg:grid-cols-4`}>
+          {steps.map((step, index) => (
+            <Reveal key={step.kicker} delay={index * 100}>
+              <div className="border-t border-line-strong pt-6">
+                <span className="eyebrow !normal-case !tracking-[0.06em]">
+                  <span className="text-signal">0{index + 1}</span> {step.kicker}
+                </span>
+                <h3 className="mt-3 text-xl">{step.title}</h3>
+                <p className="mt-3 text-fg-2">{step.description}</p>
+              </div>
+            </Reveal>
+          ))}
         </div>
 
-        <div className="grid lg:grid-cols-2 gap-16 items-center mb-20">
-          <div className={`transition-all duration-1000 ${
-            isVisible ? 'opacity-100 translate-x-0' : 'opacity-0 -translate-x-10'
-          }`}>
-            <p className="text-xl text-gray-300 mb-8 leading-relaxed">
-              At the forefront of digital transformation, we blend creativity with technical expertise to craft solutions that redefine industry standards and exceed expectations.
-            </p>
-            <p className="text-lg text-gray-400 mb-8 leading-relaxed">
-              Our commitment to innovation and excellence drives us to deliver groundbreaking solutions that empower businesses to thrive in the digital age.
-            </p>
-            
-            <div className="grid grid-cols-1 sm:grid-cols-2 gap-6">
-              {features.map((feature, index) => (
-                <div 
-                  key={index} 
-                  className={`flex items-start group transition-all duration-500 hover:transform hover:translate-x-2 ${
-                    isVisible ? 'opacity-100 translate-y-0' : 'opacity-0 translate-y-5'
-                  }`}
-                  style={{ transitionDelay: `${index * 150}ms` }}
-                >
-                  <div className="w-12 h-12 bg-gradient-to-r from-cyan-500/20 to-blue-500/20 rounded-xl flex items-center justify-center mr-4 flex-shrink-0 group-hover:scale-110 transition-transform">
-                    <feature.icon className="h-6 w-6 text-cyan-400 group-hover:text-cyan-300 transition-colors" />
-                  </div>
-                  <div>
-                    <h3 className="text-white font-semibold mb-1 group-hover:text-cyan-300 transition-colors">{feature.title}</h3>
-                    <p className="text-gray-400 text-sm">{feature.description}</p>
-                  </div>
-                </div>
-              ))}
-            </div>
-          </div>
-          
-          <div className={`relative transition-all duration-1000 delay-300 ${
-            isVisible ? 'opacity-100 translate-x-0' : 'opacity-0 translate-x-10'
-          }`}>
-            <div className="aspect-square bg-gradient-to-br from-gray-800 to-gray-900 rounded-3xl p-8 border border-white/10 hover:border-white/20 transition-all duration-500 hover:scale-105">
-              <div className="w-full h-full bg-gradient-to-br from-cyan-500/10 to-blue-500/10 rounded-2xl flex items-center justify-center">
-                <div className="text-center">
-                  <div className="grid grid-cols-2 gap-8">
-                    {stats.map((stat, index) => (
-                      <div 
-                        key={index} 
-                        className={`text-center transition-all duration-500 ${
-                          isVisible ? 'opacity-100 scale-100' : 'opacity-0 scale-75'
-                        }`}
-                        style={{ transitionDelay: `${500 + (index * 100)}ms` }}
-                      >
-                        <div className="text-3xl font-bold bg-gradient-to-r from-cyan-400 to-blue-500 bg-clip-text text-transparent mb-2">
-                          {stat.number}
-                        </div>
-                        <div className="text-gray-400 text-sm">{stat.label}</div>
-                      </div>
-                    ))}
-                  </div>
-                </div>
+        <div ref={ref} className="mt-20 grid grid-cols-2 rounded-lg border border-line bg-ink lg:grid-cols-4">
+          {stats.map((stat, i) => (
+            <div
+              key={stat.label}
+              className={`px-6 py-8 ${i % 2 ? 'border-l border-line' : ''} ${i > 1 ? 'border-t border-line lg:border-t-0' : ''} ${
+                i === 2 ? 'lg:border-l' : ''
+              }`}
+            >
+              <div className="text-[clamp(1.9rem,1.4rem+2.2vw,3.25rem)] font-bold leading-none tracking-[-0.03em]">
+                {stat.number}
               </div>
+              <div className="mt-3 font-mono text-xs uppercase tracking-[0.18em] text-fg-3">{stat.label}</div>
             </div>
-            
-            {/* Floating elements */}
-            <div className="absolute -top-4 -right-4 w-16 h-16 bg-gradient-to-r from-cyan-500/30 to-blue-500/30 rounded-full blur-lg animate-pulse delay-300"></div>
-            <div className="absolute -bottom-4 -left-4 w-20 h-20 bg-gradient-to-r from-purple-500/30 to-pink-500/30 rounded-full blur-lg animate-pulse delay-700"></div>
-          </div>
+          ))}
         </div>
       </div>
     </section>

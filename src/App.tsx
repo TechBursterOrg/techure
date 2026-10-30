@@ -1,24 +1,20 @@
-import Navbar from './component/Navbar';
-import Hero from './component/Hero';
-import Services from './component/Services';
-import About from './component/About';
-import Portfolio from './component/Portfolio';
-import Contact from './component/Contact';
-import Footer from './component/Footer';
-import ScrollToTop from './components/ScrollToTop';
+import { Routes, Route } from 'react-router-dom';
+import Layout from './component/Layout';
+import { Home, ServicesPage, AboutPage, WorkPage, FaqPage, ContactPage, NotFound } from './pages';
 
 function App() {
   return (
-    <div className="font-sans text-gray-800 overflow-hidden">
-      <Navbar />
-      <Hero />
-      <Services />
-      <About />
-      <Portfolio />
-      <Contact />
-      <Footer />
-      <ScrollToTop />
-    </div>
+    <Routes>
+      <Route element={<Layout />}>
+        <Route index element={<Home />} />
+        <Route path="services" element={<ServicesPage />} />
+        <Route path="about" element={<AboutPage />} />
+        <Route path="work" element={<WorkPage />} />
+        <Route path="faq" element={<FaqPage />} />
+        <Route path="contact" element={<ContactPage />} />
+        <Route path="*" element={<NotFound />} />
+      </Route>
+    </Routes>
   );
 }
 

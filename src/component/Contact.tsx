@@ -1,37 +1,19 @@
-import { useState, useEffect, useRef } from 'react';
-import { Mail, Phone, MapPin, Clock, CheckCircle } from 'lucide-react';
+import { useState, useRef } from 'react';
 import emailjs from '@emailjs/browser';
+import Reveal from './Reveal';
 
-const Contact = () => {
-  const [formData, setFormData] = useState({
-    name: '',
-    email: '',
-    phone: '',
-    subject: '',
-    message: '',
-  });
-  const [showSuccess, setShowSuccess] = useState(false);
-  const [isVisible, setIsVisible] = useState(false);
-  
-  const sectionRef = useRef(null);
-  const form = useRef<HTMLFormElement>(null); // This is the key - form ref for EmailJS
+const contactInfo = [
+  { title: 'Phone', info: '+44 7511435209', href: 'tel:+447511435209' },
+  { title: 'Location', info: 'Hainault, Ilford, Essex' },
+  { title: 'Hours', info: 'Mon–Fri, 9AM–6PM' },
+];
 
-  useEffect(() => {
-    const observer = new IntersectionObserver(
-      ([entry]) => {
-        if (entry.isIntersecting) {
-          setIsVisible(true);
-        }
-      },
-      { threshold: 0.1 }
-    );
+const emptyForm = { name: '', email: '', phone: '', subject: '', message: '' };
 
-    if (sectionRef.current) {
-      observer.observe(sectionRef.current);
-    }
-
-    return () => observer.disconnect();
-  }, []);
+const Contact = ({ head = true }: { head?: boolean }) => {
+  const [formData, setFormData] = useState(emptyForm);
+  const [status, setStatus] = useState<'idle' | 'sending' | 'sent' | 'error'>('idle');
+  const form = useRef<HTMLFormElement>(null);
 
   const handleChange = (e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>) => {
     setFormData({ ...formData, [e.target.name]: e.target.value });
@@ -39,190 +21,99 @@ const Contact = () => {
 
   const sendEmail = (e: React.FormEvent) => {
     e.preventDefault();
+    if (!form.current) return;
 
-    if (form.current) {
-      emailjs
-        .sendForm('service_20lrn3c', 'template_3pwnz8t', form.current, {
-          publicKey: 'tY1rQxCnh_kLTjQHl',
-        })
-        .then(
-          () => {
-            console.log('SUCCESS!');
-            setShowSuccess(true);
-            // Reset form after successful submission
-            setFormData({
-              name: '',
-              email: '',
-              phone: '',
-              subject: '',
-              message: '',
-            });
-            // Hide success message after 3 seconds
-            setTimeout(() => setShowSuccess(false), 3000);
-          },
-          (error) => {
-            console.log('FAILED...', error.text);
-          },
-        );
-    }
+    setStatus('sending');
+    emailjs
+      .sendForm('service_20lrn3c', 'template_3pwnz8t', form.current, {
+        publicKey: 'tY1rQxCnh_kLTjQHl',
+      })
+      .then(
+        () => {
+          setStatus('sent');
+          setFormData(emptyForm);
+          setTimeout(() => setStatus('idle'), 5000);
+        },
+        (error) => {
+          console.log('FAILED...', error.text);
+          setStatus('error');
+        },
+      );
   };
 
-  const contactInfo = [
-    { icon: Mail, title: 'Email', info: 'techuredev@gmail.com', gradient: 'from-cyan-500 to-blue-600' },
-    { icon: Phone, title: 'Phone', info: '+44 7511435209', gradient: 'from-purple-500 to-pink-600' },
-    { icon: MapPin, title: 'Location', info: 'Hainault, Ilford, Essex', gradient: 'from-green-500 to-emerald-600' },
-    { icon: Clock, title: 'Hours', info: 'Mon-Fri: 9AM-6PM', gradient: 'from-orange-500 to-red-600' },
-  ];
-
   return (
-    <section ref={sectionRef} id="contact" className="py-20 bg-black relative overflow-hidden">
-      <div className="absolute inset-0">
-        <div className="absolute top-1/4 left-1/3 w-96 h-96 bg-gradient-to-r from-cyan-500/10 to-blue-500/10 rounded-full blur-3xl"></div>
-        <div className="absolute bottom-1/4 right-1/3 w-64 h-64 bg-gradient-to-r from-purple-500/10 to-pink-500/10 rounded-full blur-3xl"></div>
-      </div>
-      
-      {/* Success popup */}
-      {showSuccess && (
-        <div className="fixed inset-0 bg-black/50 flex items-center justify-center z-50">
-          <div className="bg-gray-900 p-8 rounded-3xl border border-white/20 max-w-md mx-4">
-            <div className="text-center">
-              <CheckCircle className="h-16 w-16 text-green-400 mx-auto mb-4" />
-              <h3 className="text-2xl font-bold text-white mb-2">Message Sent!</h3>
-              <p className="text-gray-400">We'll get back to you within 24 hours.</p>
-            </div>
-          </div>
-        </div>
-      )}
-      
-      <div className="max-w-7xl mx-auto px-6 lg:px-8 relative z-10">
-        <div className={`text-center mb-16 transition-all duration-1000 ${
-          isVisible ? 'opacity-100 translate-y-0' : 'opacity-0 translate-y-10'
-        }`}>
-          <div className="inline-flex items-center px-4 py-2 bg-gradient-to-r from-cyan-500/10 to-blue-500/10 rounded-full border border-cyan-500/20 mb-6">
-            <Mail className="h-4 w-4 text-cyan-400 mr-2" />
-            <span className="text-sm text-cyan-300">Get In Touch</span>
-          </div>
-          <h2 className="text-4xl lg:text-5xl font-bold text-white mb-6">
-            Let's Start Your Project
-          </h2>
-          <p className="text-xl text-gray-400 max-w-3xl mx-auto">
-            Ready to transform your ideas into digital reality? Contact us today for a free consultation.
-          </p>
-        </div>
-
-        <div className="grid lg:grid-cols-2 gap-16">
-          {/* Contact Info */}
-          <div className={`transition-all duration-1000 ${
-            isVisible ? 'opacity-100 translate-x-0' : 'opacity-0 -translate-x-10'
-          }`}>
-            <div className="space-y-8">
-              {contactInfo.map((item, index) => (
-                <div 
-                  key={index} 
-                  className={`flex items-center p-6 rounded-2xl bg-gradient-to-r from-white/5 to-white/10 backdrop-blur-sm border border-white/10 hover:border-white/20 transition-all duration-300 hover:transform hover:scale-105 group ${
-                    isVisible ? 'opacity-100 translate-y-0' : 'opacity-0 translate-y-5'
-                  }`}
-                  style={{ transitionDelay: `${index * 150}ms` }}
-                >
-                  <div className={`w-16 h-16 bg-gradient-to-r ${item.gradient} rounded-xl flex items-center justify-center mr-6 group-hover:scale-110 transition-transform`}>
-                    <item.icon className="h-8 w-8 text-white" />
-                  </div>
-                  <div>
-                    <h3 className="text-lg font-semibold text-white mb-1 group-hover:text-cyan-300 transition-colors">
-                      {item.title}
-                    </h3>
-                    <p className="text-gray-400 group-hover:text-gray-300 transition-colors">
-                      {item.info}
-                    </p>
-                  </div>
-                </div>
-              ))}
-            </div>
-          </div>
-
-          {/* Contact Form */}
-          <div className={`transition-all duration-1000 delay-300 ${
-            isVisible ? 'opacity-100 translate-x-0' : 'opacity-0 translate-x-10'
-          }`}>
-            {/* This is the key fix - add ref and onSubmit to the form */}
-            <form ref={form} onSubmit={sendEmail} className="space-y-6">
-              <div className="grid md:grid-cols-2 gap-6">
-                <div>
-                  <label className="block text-sm font-medium text-gray-300 mb-2">Name</label>
-                  <input
-                    type="text"
-                    name="name"
-                    value={formData.name}
-                    onChange={handleChange}
-                    required
-                    className="w-full px-4 py-3 bg-white/10 border border-white/20 rounded-xl text-white placeholder-gray-400 focus:outline-none focus:border-cyan-400 focus:ring-2 focus:ring-cyan-400/20 transition-all duration-300"
-                    placeholder="Your Name"
-                  />
-                </div>
-                <div>
-                  <label className="block text-sm font-medium text-gray-300 mb-2">Email</label>
-                  <input
-                    type="email"
-                    name="email"
-                    value={formData.email}
-                    onChange={handleChange}
-                    required
-                    className="w-full px-4 py-3 bg-white/10 border border-white/20 rounded-xl text-white placeholder-gray-400 focus:outline-none focus:border-cyan-400 focus:ring-2 focus:ring-cyan-400/20 transition-all duration-300"
-                    placeholder="your@email.com"
-                  />
-                </div>
-              </div>
-
-              <div className="grid md:grid-cols-2 gap-6">
-                <div>
-                  <label className="block text-sm font-medium text-gray-300 mb-2">Phone</label>
-                  <input
-                    type="tel"
-                    name="phone"
-                    value={formData.phone}
-                    onChange={handleChange}
-                    className="w-full px-4 py-3 bg-white/10 border border-white/20 rounded-xl text-white placeholder-gray-400 focus:outline-none focus:border-cyan-400 focus:ring-2 focus:ring-cyan-400/20 transition-all duration-300"
-                    placeholder="+1 (555) 123-4567"
-                  />
-                </div>
-                <div>
-                  <label className="block text-sm font-medium text-gray-300 mb-2">Subject</label>
-                  <input
-                    type="text"
-                    name="subject"
-                    value={formData.subject}
-                    onChange={handleChange}
-                    required
-                    className="w-full px-4 py-3 bg-white/10 border border-white/20 rounded-xl text-white placeholder-gray-400 focus:outline-none focus:border-cyan-400 focus:ring-2 focus:ring-cyan-400/20 transition-all duration-300"
-                    placeholder="Project Subject"
-                  />
-                </div>
-              </div>
-
-              <div>
-                <label className="block text-sm font-medium text-gray-300 mb-2">Message</label>
-                <textarea
-                  name="message"
-                  value={formData.message}
-                  onChange={handleChange}
-                  required
-                  rows={6}
-                  className="w-full px-4 py-3 bg-white/10 border border-white/20 rounded-xl text-white placeholder-gray-400 focus:outline-none focus:border-cyan-400 focus:ring-2 focus:ring-cyan-400/20 transition-all duration-300 resize-none"
-                  placeholder="Tell us about your project..."
-                ></textarea>
-              </div>
-
-              {/* Changed from onClick to type="submit" */}
-              <button
-                type="submit"
-                className="w-full px-8 py-4 bg-gradient-to-r from-cyan-500 to-blue-600 text-white font-semibold rounded-xl hover:from-cyan-400 hover:to-blue-500 transition-all duration-300 transform hover:scale-105 shadow-lg hover:shadow-cyan-500/25 group"
+    <section id="contact" className={`section ${head ? '' : '!pt-0'}`}>
+      <div className="wrap">
+        <Reveal>
+          <div className="rounded-lg border border-line-strong bg-surface bg-[radial-gradient(120%_90%_at_50%_0%,#1f2225,transparent_70%)] px-[clamp(1.25rem,4vw,2.5rem)] py-[clamp(2.5rem,7vw,5.5rem)]">
+            <div className="mx-auto max-w-narrow text-center">
+              {head && (
+                <>
+                  <span className="eyebrow inline-flex items-center gap-2">
+                    <span className="h-2 w-2 rounded-full bg-signal" />
+                    Start here
+                  </span>
+                  <h2 className="mt-4">Let's build something.</h2>
+                  <p className="lead mt-6">
+                    Ready to turn your idea into working software? Tell us about your project for a free consultation.
+                  </p>
+                </>
+              )}
+              <a
+                href="mailto:techuredev@gmail.com"
+                className={`${head ? 'mt-8' : ''} inline-block break-words rounded border border-line-strong bg-ink px-5 py-3 font-mono text-[clamp(1rem,0.9rem+0.6vw,1.25rem)] tracking-[-0.01em] transition-colors duration-150 ease-snap hover:border-line-hover hover:bg-raised`}
               >
-                Send Message
-                <Mail className="inline ml-2 h-5 w-5 group-hover:translate-x-1 transition-transform" />
-              </button>
+                techuredev@gmail.com
+              </a>
+              <dl className="mt-6 flex flex-wrap justify-center gap-x-6 gap-y-2 font-mono text-sm text-fg-3">
+                {contactInfo.map((item) => (
+                  <div key={item.title} className="flex gap-2">
+                    <dt className="sr-only">{item.title}</dt>
+                    <dd>{item.href ? <a href={item.href} className="hover:text-fg">{item.info}</a> : item.info}</dd>
+                  </div>
+                ))}
+              </dl>
+            </div>
+
+            <form ref={form} onSubmit={sendEmail} className="mx-auto mt-12 grid max-w-narrow gap-5 border-t border-line pt-12 text-left">
+              <div className="grid gap-5 md:grid-cols-2">
+                <label className="grid gap-2">
+                  <span className="font-mono text-xs uppercase tracking-[0.18em] text-fg-3">Name</span>
+                  <input type="text" name="name" value={formData.name} onChange={handleChange} required className="field" placeholder="Your name" />
+                </label>
+                <label className="grid gap-2">
+                  <span className="font-mono text-xs uppercase tracking-[0.18em] text-fg-3">Email</span>
+                  <input type="email" name="email" value={formData.email} onChange={handleChange} required className="field" placeholder="you@company.com" />
+                </label>
+              </div>
+              <div className="grid gap-5 md:grid-cols-2">
+                <label className="grid gap-2">
+                  <span className="font-mono text-xs uppercase tracking-[0.18em] text-fg-3">Phone</span>
+                  <input type="tel" name="phone" value={formData.phone} onChange={handleChange} className="field" placeholder="+44 7000 000000" />
+                </label>
+                <label className="grid gap-2">
+                  <span className="font-mono text-xs uppercase tracking-[0.18em] text-fg-3">Subject</span>
+                  <input type="text" name="subject" value={formData.subject} onChange={handleChange} required className="field" placeholder="Project subject" />
+                </label>
+              </div>
+              <label className="grid gap-2">
+                <span className="font-mono text-xs uppercase tracking-[0.18em] text-fg-3">Message</span>
+                <textarea name="message" value={formData.message} onChange={handleChange} required rows={6} className="field resize-none" placeholder="Tell us about your project…" />
+              </label>
+
+              <div className="flex flex-col items-center gap-4 sm:flex-row sm:justify-between">
+                <p className="text-sm text-fg-3" role="status" aria-live="polite">
+                  {status === 'sent' && <span className="text-done">Message sent. We'll get back to you within 24 hours.</span>}
+                  {status === 'error' && <span className="text-signal">Something went wrong. Please email us directly.</span>}
+                  {(status === 'idle' || status === 'sending') && 'We reply within 24 hours.'}
+                </p>
+                <button type="submit" disabled={status === 'sending'} className="btn-metal w-full disabled:opacity-60 sm:w-auto">
+                  {status === 'sending' ? 'Sending…' : 'Send message'}
+                </button>
+              </div>
             </form>
           </div>
-        </div>
+        </Reveal>
       </div>
     </section>
   );

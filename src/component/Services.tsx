@@ -1,122 +1,92 @@
-import React, { useState, useEffect, useRef } from 'react';
-import { Rocket, Globe, Code2, Smartphone } from 'lucide-react';
+import { Link } from 'react-router-dom';
+import Reveal from './Reveal';
 
-const Services = () => {
-  const [isVisible, setIsVisible] = useState(false);
-  const sectionRef = useRef<HTMLElement>(null);
+const facts = [
+  { label: 'Based', value: 'Essex, United Kingdom' },
+  { label: 'Focus', value: 'Websites, web & mobile apps' },
+  { label: 'Contact', value: 'Straight to the team' },
+];
 
-  useEffect(() => {
-    const observer = new IntersectionObserver(
-      ([entry]) => {
-        if (entry.isIntersecting) {
-          setIsVisible(true);
-        }
-      },
-      { threshold: 0.1 }
-    );
+const services = [
+  {
+    title: 'Website Development',
+    description: 'Responsive websites that captivate visitors and turn them into loyal customers.',
+    features: ['SEO-optimized', 'Mobile-first design', 'Lightning fast', 'Conversion focused'],
+  },
+  {
+    title: 'Web Applications',
+    description: 'Scalable web applications built on modern technology, with seamless user experiences.',
+    features: ['Cloud-native', 'Real-time features', 'Secure & scalable', 'API integration'],
+  },
+  {
+    title: 'Mobile Apps',
+    description: 'Native and cross-platform mobile apps that feel at home on every device.',
+    features: ['iOS & Android', 'Offline support', 'Push notifications', 'App Store ready'],
+  },
+];
 
-    if (sectionRef.current) {
-      observer.observe(sectionRef.current);
-    }
+interface ServicesProps {
+  head?: boolean;
+  // Short overview for the home page: no facts strip or feature lists
+  compact?: boolean;
+}
 
-    return () => observer.disconnect();
-  }, []);
+const Services = ({ head = true, compact = false }: ServicesProps) => (
+  <section id="services" className={`section ${head ? '' : '!pt-0'}`}>
+    <div className="wrap">
+      {head && (
+      <Reveal className="max-w-[44rem]">
+        <span className="eyebrow">What we do</span>
+        <h2 className="mt-4">We build software for growing businesses.</h2>
+        <p className="mt-6 text-lg text-fg-2">
+          From a first website to a full product, we handle design, development and launch, so you
+          can focus on running your business.
+        </p>
+        <Link to="/services" className="mt-6 inline-block font-semibold text-steel transition-colors hover:text-fg">
+          Explore our services →
+        </Link>
+      </Reveal>
+      )}
 
-  const services = [
-    {
-      title: 'Website Development',
-      description: 'Create stunning, responsive websites that captivate and convert visitors into loyal customers.',
-      features: ['SEO-optimized', 'Mobile-first design', 'Lightning fast', 'Conversion focused'],
-      icon: Globe,
-      gradient: 'from-cyan-500 to-blue-600',
-      bgGradient: 'from-cyan-500/10 to-blue-500/10',
-      borderGradient: 'from-cyan-500/20 to-blue-500/20',
-    },
-    {
-      title: 'Web Applications',
-      description: 'Build powerful, scalable web applications with cutting-edge technology and seamless user experiences.',
-      features: ['Cloud-native', 'Real-time features', 'Secure & scalable', 'API integration'],
-      icon: Code2,
-      gradient: 'from-purple-500 to-pink-600',
-      bgGradient: 'from-purple-500/10 to-pink-500/10',
-      borderGradient: 'from-purple-500/20 to-pink-500/20',
-    },
-    {
-      title: 'Mobile Apps',
-      description: 'Develop native and cross-platform mobile applications that deliver exceptional user experiences.',
-      features: ['iOS & Android', 'Offline support', 'Push notifications', 'App Store ready'],
-      icon: Smartphone,
-      gradient: 'from-green-500 to-emerald-600',
-      bgGradient: 'from-green-500/10 to-emerald-500/10',
-      borderGradient: 'from-green-500/20 to-emerald-500/20',
-    },
-  ];
-
-  return (
-    <section ref={sectionRef} id="services" className="py-20 bg-gray-900 relative overflow-hidden">
-      <div className="absolute inset-0 bg-[radial-gradient(circle_at_center,rgba(59,130,246,0.1),transparent_50%)]"></div>
-      
-      <div className="max-w-7xl mx-auto px-6 lg:px-8 relative z-10">
-        <div className={`text-center mb-16 transition-all duration-1000 ${
-          isVisible ? 'opacity-100 translate-y-0' : 'opacity-0 translate-y-10'
-        }`}>
-          <div className="inline-flex items-center px-4 py-2 bg-gradient-to-r from-cyan-500/10 to-blue-500/10 rounded-full border border-cyan-500/20 mb-6">
-            <Rocket className="h-4 w-4 text-cyan-400 mr-2 animate-pulse" />
-            <span className="text-sm text-cyan-300">Our Services</span>
-          </div>
-          <h2 className="text-4xl lg:text-5xl font-bold text-white mb-6">
-            Cutting-Edge Solutions
-          </h2>
-          <p className="text-xl text-gray-400 max-w-3xl mx-auto">
-            We deliver comprehensive development solutions that push the boundaries of what's possible in digital innovation.
-          </p>
-        </div>
-
-        <div className="grid lg:grid-cols-3 gap-8">
-          {services.map((service, index) => (
-            <div 
-              key={index}
-              className={`group relative p-8 rounded-3xl bg-gradient-to-br ${service.bgGradient} border border-white/10 hover:border-white/20 transition-all duration-500 hover:transform hover:scale-105 ${
-                isVisible 
-                  ? 'opacity-100 translate-y-0' 
-                  : 'opacity-0 translate-y-10'
-              }`}
-              style={{ transitionDelay: `${index * 200}ms` }}
+      {!compact && (
+      <Reveal delay={100}>
+        <dl className={`${head ? 'mt-12' : ''} grid rounded-lg border border-line sm:grid-cols-3`}>
+          {facts.map((fact, i) => (
+            <div
+              key={fact.label}
+              className={`px-6 py-4 ${i > 0 ? 'border-t border-line sm:border-l sm:border-t-0' : ''}`}
             >
-              <div className="relative z-10">
-                <div className={`w-16 h-16 bg-gradient-to-r ${service.gradient} rounded-2xl flex items-center justify-center mb-6 group-hover:scale-110 transition-transform duration-300 group-hover:rotate-3`}>
-                  <service.icon className="h-8 w-8 text-white" />
-                </div>
-                
-                <h3 className="text-2xl font-bold text-white mb-4 group-hover:text-cyan-300 transition-colors">
-                  {service.title}
-                </h3>
-                <p className="text-gray-300 mb-6 leading-relaxed">{service.description}</p>
-                
-                <div className="space-y-3">
-                  {service.features.map((feature, idx) => (
-                    <div 
-                      key={idx} 
-                      className={`flex items-center transition-all duration-300 ${
-                        isVisible ? 'opacity-100 translate-x-0' : 'opacity-0 -translate-x-5'
-                      }`}
-                      style={{ transitionDelay: `${(index * 200) + (idx * 100)}ms` }}
-                    >
-                      <div className={`w-2 h-2 bg-gradient-to-r ${service.gradient} rounded-full mr-3 animate-pulse`}></div>
-                      <span className="text-gray-300 group-hover:text-white transition-colors">{feature}</span>
-                    </div>
-                  ))}
-                </div>
-              </div>
-              
-              {/* Hover effect */}
-              <div className={`absolute inset-0 bg-gradient-to-br ${service.borderGradient} rounded-3xl opacity-0 group-hover:opacity-100 transition-opacity duration-300 blur-xl -z-10`}></div>
+              <dt className="font-mono text-xs uppercase tracking-[0.18em] text-fg-3">{fact.label}</dt>
+              <dd className="mt-1 font-semibold">{fact.value}</dd>
             </div>
           ))}
-        </div>
+        </dl>
+      </Reveal>
+      )}
+
+      <div className={`${head || !compact ? 'mt-16' : ''} grid gap-px overflow-hidden rounded-lg border border-line bg-line lg:grid-cols-3`}>
+        {services.map((service, index) => (
+          <Reveal key={service.title} delay={index * 100} className="h-full">
+            <article className="group flex h-full flex-col bg-ink p-8 transition-colors duration-150 ease-snap hover:bg-surface">
+              <span className="font-mono text-sm text-signal">0{index + 1}</span>
+              <h3 className="mt-3 text-[clamp(1.45rem,1.25rem+0.9vw,1.9rem)]">{service.title}</h3>
+              <p className="mt-4 text-fg-2">{service.description}</p>
+              {!compact && (
+              <ul className="mt-8 grid gap-2 border-t border-line pt-6">
+                {service.features.map((feature) => (
+                  <li key={feature} className="flex items-center gap-3 text-sm text-fg-2">
+                    <span className="h-1.5 w-1.5 rounded-full bg-fg-3 transition-colors group-hover:bg-signal" />
+                    {feature}
+                  </li>
+                ))}
+              </ul>
+              )}
+            </article>
+          </Reveal>
+        ))}
       </div>
-    </section>
-  );
-};
+    </div>
+  </section>
+);
 
 export default Services;
