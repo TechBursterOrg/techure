@@ -60,10 +60,10 @@ const Contact = ({ head = true }: { head?: boolean }) => {
                 </>
               )}
               <a
-                href="mailto:techuredev@gmail.com"
+                href="mailto:techburster@gmail.com"
                 className={`${head ? 'mt-8' : ''} inline-block break-words rounded border border-line-strong bg-ink px-5 py-3 font-mono text-[clamp(1rem,0.9rem+0.6vw,1.25rem)] tracking-[-0.01em] transition-colors duration-150 ease-snap hover:border-line-hover hover:bg-raised`}
               >
-                techuredev@gmail.com
+                techbursterdev@gmail.com
               </a>
               <dl className="mt-6 flex flex-wrap justify-center gap-x-6 gap-y-2 font-mono text-sm text-fg-3">
                 {contactInfo.map((item) => (

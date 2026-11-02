@@ -22,7 +22,7 @@ const columns = [
   {
     title: 'Get in touch',
     links: [
-      { name: 'techuredev@gmail.com', href: 'mailto:techuredev@gmail.com' },
+      { name: 'techburster@gmail.com', href: 'mailto:techburster@gmail.com' },
       { name: '+44 7511435209', href: 'tel:+447511435209' },
       { name: 'Hainault, Ilford, Essex' },
     ],

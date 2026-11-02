@@ -29,7 +29,7 @@ const Home = () => (
             <Link to="/contact" className="btn-metal">
               Start your project
             </Link>
-            <a href="mailto:techuredev@gmail.com" className="btn-ghost">
+            <a href="mailto:techburster@gmail.com" className="btn-ghost">
               Email us
             </a>
           </div>

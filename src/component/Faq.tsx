@@ -16,7 +16,7 @@ const questions = [
   },
   {
     q: 'How do I start a project?',
-    a: 'Send us a message from the contact page or email techuredev@gmail.com. We reply within 24 hours to set up a free consultation.',
+    a: 'Send us a message from the contact page or email techburster@gmail.com. We reply within 24 hours to set up a free consultation.',
   },
 ];
 
